@@ -3,20 +3,22 @@
 resource "datadog_monitor" "<%= resource_name_of(monitor) %>" {
     name              = "<%= monitor["name"] %>"
     type              = "<%= monitor["type"] %>"
-    message           = "<%= monitor["message"] %>"
-    query             = "<%= monitor["query"] %>"
+    message           = <<EOT
+<%= monitor["message"] %>
+EOT
+    query             = <%= monitor["query"].inspect %>
     notify_no_data    = <%= options["notify_no_data"] %>
     renotify_interval = <%= options["renotify_interval"] %>
     notify_audit      = <%= options["notify_audit"] %>
     timeout_h         = <%= options["timeout_h"] %>
 
-<%- if options["thresholds"] -%>
     thresholds {
+<%- if options["thresholds"] -%>
 <% if options["thresholds"]["ok"] -%>        ok       = <%= options["thresholds"]["ok"] %><%- end %>
 <% if options["thresholds"]["warning"] -%>        warning  = <%= options["thresholds"]["warning"] %><%- end %>
 <% if options["thresholds"]["critical"] -%>        critical = <%= options["thresholds"]["critical"] %><%- end %>
+<%- end -%>
     }
 }
 
-<%- end -%>
 <% end -%>

@@ -24,7 +24,7 @@ module Terraforming
               "deleted" => nil,
               "query" => "avg(last_1h):avg:system.load.15{*} by {host,name} > 5",
               "message" =>
-                "@slack-infrastructure \n{{#is_alert}}  @pagerduty-Datadog    \#{{/is_alert}}\n{{#is_recovery}} @pagerduty-resolve  \#{{/is_recovery}}",
+                "@slack-infrastructure\n{{#is_alert}}  @pagerduty-Datadog    \#{{/is_alert}}\n{{#is_recovery}} @pagerduty-resolve  \#{{/is_recovery}}",
               "matching_downtimes" => [],
               "id" => 123456,
               "multi" => true,
@@ -55,7 +55,7 @@ module Terraforming
               "deleted" => nil,
               "query" => "\"aws.status\".over(\"region:ap-northeast-1\",\"service:vpc\").by(\"region\",\"service\").last(2).count_by_status()",
               "message" =>
-                "@slack-engineering @slack-infrastructure \n{{#is_alert}}  @pagerduty-Datadog    \#{{/is_alert}}\n{{#is_recovery}} @pagerduty-resolve  \#{{/is_recovery}}",
+                "@slack-engineering @slack-infrastructure\n{{#is_alert}}  @pagerduty-Datadog    \#{{/is_alert}}\n{{#is_recovery}} @pagerduty-resolve  \#{{/is_recovery}}",
               "matching_downtimes" => [],
               "id" => 789012,
               "multi" => true,
@@ -74,7 +74,6 @@ module Terraforming
                 "locked" => false,
                 "timeout_h" => 0,
                 "silenced" => {},
-                "thresholds" => { "warning" => 1, "ok" => 1, "critical" => 1 },
                 "notify_no_data" => false,
                 "renotify_interval" => 0,
                 "no_data_timeframe" => 2
@@ -90,11 +89,15 @@ module Terraforming
 
       describe ".tf" do
         it "should generate tf" do
-          expect(described_class.tf(client)).to eq <<-EOS
+          expect(described_class.tf(client)).to eq <<-'EOS'
 resource "datadog_monitor" "High-Load-Average-hostname-namename" {
     name              = "High Load Average {{host.name}} {{name.name}}"
     type              = "metric alert"
-    message           = "@slack-infrastructure \n{{#is_alert}}  @pagerduty-Datadog    \#{{/is_alert}}\n{{#is_recovery}} @pagerduty-resolve  \#{{/is_recovery}}"
+    message           = <<EOT
+@slack-infrastructure
+{{#is_alert}}  @pagerduty-Datadog    #{{/is_alert}}
+{{#is_recovery}} @pagerduty-resolve  #{{/is_recovery}}
+EOT
     query             = "avg(last_1h):avg:system.load.15{*} by {host,name} > 5"
     notify_no_data    = false
     renotify_interval = 0
@@ -111,7 +114,11 @@ resource "datadog_monitor" "High-Load-Average-hostname-namename" {
 resource "datadog_monitor" "CriticalVPCAWS-Service-Status" {
     name              = "[Critical][VPC]AWS Service Status"
     type              = "service check"
-    message           = "@slack-engineering @slack-infrastructure \n{{#is_alert}}  @pagerduty-Datadog    \#{{/is_alert}}\n{{#is_recovery}} @pagerduty-resolve  \#{{/is_recovery}}"
+    message           = <<EOT
+@slack-engineering @slack-infrastructure
+{{#is_alert}}  @pagerduty-Datadog    #{{/is_alert}}
+{{#is_recovery}} @pagerduty-resolve  #{{/is_recovery}}
+EOT
     query             = "\"aws.status\".over(\"region:ap-northeast-1\",\"service:vpc\").by(\"region\",\"service\").last(2).count_by_status()"
     notify_no_data    = false
     renotify_interval = 0
@@ -119,9 +126,6 @@ resource "datadog_monitor" "CriticalVPCAWS-Service-Status" {
     timeout_h         = 0
 
     thresholds {
-        ok       = 1
-        warning  = 1
-        critical = 1
     }
 }
 
@@ -144,7 +148,7 @@ resource "datadog_monitor" "CriticalVPCAWS-Service-Status" {
                       "id" => "123456",
                       "attributes" => {
                         "id" => "123456",
-                        "message" => "@slack-infrastructure \n{{#is_alert}}  @pagerduty-Datadog    \#{{/is_alert}}\n{{#is_recovery}} @pagerduty-resolve  \#{{/is_recovery}}",
+                        "message" => "@slack-infrastructure\n{{#is_alert}}  @pagerduty-Datadog    \#{{/is_alert}}\n{{#is_recovery}} @pagerduty-resolve  \#{{/is_recovery}}",
                         "name" => "High Load Average {{host.name}} {{name.name}}",
                         "notify_audit" => "false",
                         "notify_no_data" => "false",
@@ -164,7 +168,7 @@ resource "datadog_monitor" "CriticalVPCAWS-Service-Status" {
                       "id" => "789012",
                       "attributes" => {
                         "id" => "789012",
-                        "message" => "@slack-engineering @slack-infrastructure \n{{#is_alert}}  @pagerduty-Datadog    \#{{/is_alert}}\n{{#is_recovery}} @pagerduty-resolve  \#{{/is_recovery}}",
+                        "message" => "@slack-engineering @slack-infrastructure\n{{#is_alert}}  @pagerduty-Datadog    \#{{/is_alert}}\n{{#is_recovery}} @pagerduty-resolve  \#{{/is_recovery}}",
                         "name" => "[Critical][VPC]AWS Service Status",
                         "notify_audit" => "true",
                         "notify_no_data" => "false",
@@ -172,10 +176,7 @@ resource "datadog_monitor" "CriticalVPCAWS-Service-Status" {
                         "renotify_interval" => "0",
                         "timeout_h" => "0",
                         "type" => "service check",
-                        "thresholds.ok" => "1",
-                        "thresholds.critical" => "1",
-                        "thresholds.warning" => "1",
-                        "thresholds.#" => "3",
+                        "thresholds.#" => "0",
                       }
                     }
                   }

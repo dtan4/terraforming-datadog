@@ -40,6 +40,8 @@ module Terraforming
             threshold_attributes["thresholds.warning"] = options["thresholds"]["warning"].to_s if options["thresholds"]["warning"]
             threshold_attributes["thresholds.#"] = threshold_attributes.keys.length.to_s
             attributes.merge!(threshold_attributes)
+          else
+            attributes["thresholds.#"] = "0"
           end
 
           result["datadog_monitor.#{resource_name_of(monitor)}"] = {
