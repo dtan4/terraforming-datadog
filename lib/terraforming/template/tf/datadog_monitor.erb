@@ -1,17 +1,23 @@
 <% monitors.each do |monitor| -%>
 <%- options = options_of(monitor) -%>
 resource "datadog_monitor" "<%= resource_name_of(monitor) %>" {
-    name              = "<%= monitor["name"] %>"
-    type              = "<%= monitor["type"] %>"
-    message           = <<EOT
+    name               = "<%= monitor["name"] %>"
+    type               = "<%= monitor["type"] %>"
+    message            = <<EOT
 <%= monitor["message"] %>
 EOT
-    query             = <%= monitor["query"].inspect %>
-    notify_no_data    = <%= options["notify_no_data"] %>
-    no_data_timeframe = <%= options["no_data_timeframe"] %>
-    renotify_interval = <%= options["renotify_interval"] %>
-    notify_audit      = <%= options["notify_audit"] %>
-    timeout_h         = <%= options["timeout_h"] %>
+    query              = <%= monitor["query"].inspect %>
+    notify_no_data     = <%= options["notify_no_data"] %>
+    no_data_timeframe  = <%= options["no_data_timeframe"] %>
+    renotify_interval  = <%= options["renotify_interval"] %>
+    notify_audit       = <%= options["notify_audit"] %>
+    timeout_h          = <%= options["timeout_h"] %>
+<%- if options["escalation_message"] -%>
+    escalation_message = <%= options["escalation_message"].inspect %>
+<%- end -%>
+<%- unless options["include_tags"].nil? -%>
+    include_tags       = <%= options["include_tags"] %>
+<%- end -%>
 
     thresholds {
 <%- if options["thresholds"] -%>

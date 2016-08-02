@@ -47,7 +47,9 @@ module Terraforming
                 "require_full_window" => true,
                 "notify_no_data" => false,
                 "renotify_interval" => 0,
-                "no_data_timeframe" => 120
+                "no_data_timeframe" => 120,
+                "escalation_message" => "escalated",
+                "include_tags" => false,
               }
             },
             {
@@ -91,19 +93,21 @@ module Terraforming
         it "should generate tf" do
           expect(described_class.tf(client)).to eq <<-'EOS'
 resource "datadog_monitor" "High-Load-Average-hostname-namename" {
-    name              = "High Load Average {{host.name}} {{name.name}}"
-    type              = "metric alert"
-    message           = <<EOT
+    name               = "High Load Average {{host.name}} {{name.name}}"
+    type               = "metric alert"
+    message            = <<EOT
 @slack-infrastructure
 {{#is_alert}}  @pagerduty-Datadog    #{{/is_alert}}
 {{#is_recovery}} @pagerduty-resolve  #{{/is_recovery}}
 EOT
-    query             = "avg(last_1h):avg:system.load.15{*} by {host,name} > 5"
-    notify_no_data    = false
-    no_data_timeframe = 120
-    renotify_interval = 0
-    notify_audit      = false
-    timeout_h         = 0
+    query              = "avg(last_1h):avg:system.load.15{*} by {host,name} > 5"
+    notify_no_data     = false
+    no_data_timeframe  = 120
+    renotify_interval  = 0
+    notify_audit       = false
+    timeout_h          = 0
+    escalation_message = "escalated"
+    include_tags       = false
 
     thresholds {
 
@@ -113,19 +117,19 @@ EOT
 }
 
 resource "datadog_monitor" "CriticalVPCAWS-Service-Status" {
-    name              = "[Critical][VPC]AWS Service Status"
-    type              = "service check"
-    message           = <<EOT
+    name               = "[Critical][VPC]AWS Service Status"
+    type               = "service check"
+    message            = <<EOT
 @slack-engineering @slack-infrastructure
 {{#is_alert}}  @pagerduty-Datadog    #{{/is_alert}}
 {{#is_recovery}} @pagerduty-resolve  #{{/is_recovery}}
 EOT
-    query             = "\"aws.status\".over(\"region:ap-northeast-1\",\"service:vpc\").by(\"region\",\"service\").last(2).count_by_status()"
-    notify_no_data    = false
-    no_data_timeframe = 2
-    renotify_interval = 0
-    notify_audit      = true
-    timeout_h         = 0
+    query              = "\"aws.status\".over(\"region:ap-northeast-1\",\"service:vpc\").by(\"region\",\"service\").last(2).count_by_status()"
+    notify_no_data     = false
+    no_data_timeframe  = 2
+    renotify_interval  = 0
+    notify_audit       = true
+    timeout_h          = 0
 
     thresholds {
     }
@@ -162,6 +166,8 @@ EOT
                         "renotify_interval" => "0",
                         "timeout_h" => "0",
                         "type" => "metric alert",
+                        "escalation_message" => "escalated",
+                        "include_tags" => "false",
                         "thresholds.critical" => "3.1",
                         "thresholds.warning" => "2",
                         "thresholds.#" => "2",

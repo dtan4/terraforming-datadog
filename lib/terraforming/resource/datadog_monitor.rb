@@ -34,6 +34,9 @@ module Terraforming
             "type" => monitor["type"],
           }
 
+          attributes["escalation_message"] = options["escalation_message"] if options["escalation_message"]
+          attributes["include_tags"] = options["include_tags"].to_s unless options["include_tags"].nil?
+
           if options["thresholds"]
             threshold_attributes = {}
             threshold_attributes["thresholds.ok"] = format_number(options["thresholds"]["ok"]).to_s if options["thresholds"]["ok"]
