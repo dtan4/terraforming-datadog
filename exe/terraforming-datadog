@@ -1,3 +1,5 @@
 #!/usr/bin/env ruby
 
 require "terraforming/datadog"
+
+Terraforming::Datadog::CLI.start(ARGV)

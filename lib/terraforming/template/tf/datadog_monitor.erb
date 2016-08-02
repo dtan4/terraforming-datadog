@@ -10,6 +10,7 @@ resource "datadog_monitor" "<%= resource_name_of(monitor) %>" {
     notify_audit      = <%= options["notify_audit"] %>
     timeout_h         = <%= options["timeout_h"] %>
 
+<%- if options["thresholds"] -%>
     thresholds {
 <% if options["thresholds"]["ok"] -%>        ok       = <%= options["thresholds"]["ok"] %><%- end %>
 <% if options["thresholds"]["warning"] -%>        warning  = <%= options["thresholds"]["warning"] %><%- end %>
@@ -17,4 +18,5 @@ resource "datadog_monitor" "<%= resource_name_of(monitor) %>" {
     }
 }
 
+<%- end -%>
 <% end -%>

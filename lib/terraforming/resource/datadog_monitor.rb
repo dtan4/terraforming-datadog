@@ -17,6 +17,10 @@ module Terraforming
         apply_template(@client)
       end
 
+      def tfstate
+        ""
+      end
+
       private
 
       # TODO(dtan4): Use terraform's utility method
