@@ -71,6 +71,9 @@ module Terraforming
           "serial" => 1,
           "modules" => [
             {
+              "path" => [
+                "root"
+              ],
               "outputs" => {},
               "resources" => resources,
             }

@@ -140,6 +140,9 @@ EOT
             "serial" => 1,
             "modules" => [
               {
+                "path" => [
+                  "root"
+                ],
                 "outputs" => {},
                 "resources" => {
                   "datadog_monitor.High-Load-Average-hostname-namename" => {
