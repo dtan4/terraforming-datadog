@@ -48,6 +48,15 @@ module Terraforming
             attributes["thresholds.#"] = "0"
           end
 
+          if options["silenced"]
+            silenced_attributes = {}
+            options["silenced"].each { |k, v| silenced_attributes["silenced.#{k}"] = silenced_value(v).to_s }
+            silenced_attributes["silenced.#"] = silenced_attributes.keys.length.to_s
+            attributes.merge!(silenced_attributes)
+          else
+            attributes["silenced.#"] = "0"
+          end
+
           result["datadog_monitor.#{resource_name_of(monitor)}"] = {
             "type" => "datadog_monitor",
             "primary" => {
@@ -99,6 +108,10 @@ module Terraforming
 
       def resource_name_of(monitor)
         monitor["name"].gsub(/[^a-zA-Z0-9 ]/, "").gsub(" ", "-")
+      end
+
+      def silenced_value(v)
+        v.nil? ? 0 : v
       end
 
       def template_path

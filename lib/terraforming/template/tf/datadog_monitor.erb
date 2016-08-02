@@ -26,6 +26,12 @@ EOT
 <% if options["thresholds"]["critical"] -%>        critical = <%= format_number(options["thresholds"]["critical"]) %><%- end %>
 <%- end -%>
     }
+
+    silenced {
+<%- options["silenced"].each do |k, v| -%>
+        <%= k.inspect %> = <%= silenced_value(v) %>
+<%- end -%>
+    }
 }
 
 <% end -%>

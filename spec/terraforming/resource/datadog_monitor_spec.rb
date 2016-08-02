@@ -75,10 +75,10 @@ module Terraforming
                 "notify_audit" => true,
                 "locked" => false,
                 "timeout_h" => 0,
-                "silenced" => {},
+                "silenced" => { "*" => nil },
                 "notify_no_data" => false,
                 "renotify_interval" => 0,
-                "no_data_timeframe" => 2
+                "no_data_timeframe" => 2,
               }
             },
           ]
@@ -114,6 +114,9 @@ EOT
         warning  = 2
         critical = 3.1
     }
+
+    silenced {
+    }
 }
 
 resource "datadog_monitor" "CriticalVPCAWS-Service-Status" {
@@ -132,6 +135,10 @@ EOT
     timeout_h          = 0
 
     thresholds {
+    }
+
+    silenced {
+        "*" = 0
     }
 }
 
@@ -171,6 +178,7 @@ EOT
                         "thresholds.critical" => "3.1",
                         "thresholds.warning" => "2",
                         "thresholds.#" => "2",
+                        "silenced.#" => "0",
                       }
                     }
                   },
@@ -190,6 +198,8 @@ EOT
                         "timeout_h" => "0",
                         "type" => "service check",
                         "thresholds.#" => "0",
+                        "silenced.*" => "0",
+                        "silenced.#" => "1",
                       }
                     }
                   }
