@@ -1,7 +1,6 @@
+require "erb"
+require "dogapi"
+
 require "terraforming/datadog/version"
 
-module Terraforming
-  module Datadog
-    # Your code goes here...
-  end
-end
+require "terraforming/resource/datadog_monitor"

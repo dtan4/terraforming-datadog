@@ -1,0 +1,20 @@
+<% monitors.each do |monitor| -%>
+<%- options = options_of(monitor) -%>
+resource "datadog_monitor" "<%= resource_name_of(monitor) %>" {
+    name              = "<%= monitor["name"] %>"
+    type              = "<%= monitor["type"] %>"
+    message           = "<%= monitor["message"] %>"
+    query             = "<%= monitor["query"] %>"
+    notify_no_data    = <%= options["notify_no_data"] %>
+    renotify_interval = <%= options["renotify_interval"] %>
+    notify_audit      = <%= options["notify_audit"] %>
+    timeout_h         = <%= options["timeout_h"] %>
+
+    thresholds {
+<% if options["thresholds"]["ok"] -%>        ok       = <%= options["thresholds"]["ok"] %><%- end %>
+<% if options["thresholds"]["warning"] -%>        warning  = <%= options["thresholds"]["warning"] %><%- end %>
+<% if options["thresholds"]["critical"] -%>        critical = <%= options["thresholds"]["critical"] %><%- end %>
+    }
+}
+
+<% end -%>
