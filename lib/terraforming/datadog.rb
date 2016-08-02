@@ -1,5 +1,6 @@
-require "erb"
 require "dogapi"
+require "erb"
+require "json"
 require "thor"
 
 require "terraforming/datadog/version"

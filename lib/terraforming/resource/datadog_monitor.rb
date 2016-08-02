@@ -18,7 +18,42 @@ module Terraforming
       end
 
       def tfstate
-        ""
+        resources = monitors.inject({}) do |result, monitor|
+          options = options_of(monitor)
+
+          attributes = {
+            "id" => monitor["id"].to_s,
+            "message" => monitor["message"],
+            "name" => monitor["name"],
+            "notify_audit" => options["notify_audit"].to_s,
+            "notify_no_data" => options["notify_no_data"].to_s,
+            "query" => monitor["query"],
+            "renotify_interval" => options["renotify_interval"].to_s,
+            "timeout_h" => options["timeout_h"].to_s,
+            "type" => monitor["type"],
+          }
+
+          if options["thresholds"]
+            threshold_attributes = {}
+            threshold_attributes["thresholds.ok"] = options["thresholds"]["ok"].to_s if options["thresholds"]["ok"]
+            threshold_attributes["thresholds.critical"] = options["thresholds"]["critical"].to_s if options["thresholds"]["critical"]
+            threshold_attributes["thresholds.warning"] = options["thresholds"]["warning"].to_s if options["thresholds"]["warning"]
+            threshold_attributes["thresholds.#"] = threshold_attributes.keys.length.to_s
+            attributes.merge!(threshold_attributes)
+          end
+
+          result["datadog_monitor.#{resource_name_of(monitor)}"] = {
+            "type" => "datadog_monitor",
+            "primary" => {
+              "id" => monitor["id"].to_s,
+              "attributes" => attributes
+            }
+          }
+
+          result
+        end
+
+        generate_tfstate(resources)
       end
 
       private
@@ -26,6 +61,19 @@ module Terraforming
       # TODO(dtan4): Use terraform's utility method
       def apply_template(client)
         ERB.new(open(template_path).read, nil, "-").result(binding)
+      end
+
+      def generate_tfstate(resources)
+        JSON.pretty_generate({
+          "version" => 1,
+          "serial" => 1,
+          "modules" => [
+            {
+              "outputs" => {},
+              "resources" => resources,
+            }
+          ]
+        })
       end
 
       def monitors

@@ -128,6 +128,63 @@ resource "datadog_monitor" "CriticalVPCAWS-Service-Status" {
           EOS
         end
       end
+
+      describe ".tfstate" do
+        it "should generate tfstate" do
+          expect(described_class.tfstate(client)).to eq JSON.pretty_generate({
+            "version" => 1,
+            "serial" => 1,
+            "modules" => [
+              {
+                "outputs" => {},
+                "resources" => {
+                  "datadog_monitor.High-Load-Average-hostname-namename" => {
+                    "type" => "datadog_monitor",
+                    "primary" => {
+                      "id" => "123456",
+                      "attributes" => {
+                        "id" => "123456",
+                        "message" => "@slack-infrastructure \n{{#is_alert}}  @pagerduty-Datadog    \#{{/is_alert}}\n{{#is_recovery}} @pagerduty-resolve  \#{{/is_recovery}}",
+                        "name" => "High Load Average {{host.name}} {{name.name}}",
+                        "notify_audit" => "false",
+                        "notify_no_data" => "false",
+                        "query" => "avg(last_1h):avg:system.load.15{*} by {host,name} > 5",
+                        "renotify_interval" => "0",
+                        "timeout_h" => "0",
+                        "type" => "metric alert",
+                        "thresholds.critical" => "3.0",
+                        "thresholds.warning" => "2.0",
+                        "thresholds.#" => "2",
+                      }
+                    }
+                  },
+                  "datadog_monitor.CriticalVPCAWS-Service-Status" => {
+                    "type" => "datadog_monitor",
+                    "primary" => {
+                      "id" => "789012",
+                      "attributes" => {
+                        "id" => "789012",
+                        "message" => "@slack-engineering @slack-infrastructure \n{{#is_alert}}  @pagerduty-Datadog    \#{{/is_alert}}\n{{#is_recovery}} @pagerduty-resolve  \#{{/is_recovery}}",
+                        "name" => "[Critical][VPC]AWS Service Status",
+                        "notify_audit" => "true",
+                        "notify_no_data" => "false",
+                        "query" => "\"aws.status\".over(\"region:ap-northeast-1\",\"service:vpc\").by(\"region\",\"service\").last(2).count_by_status()",
+                        "renotify_interval" => "0",
+                        "timeout_h" => "0",
+                        "type" => "service check",
+                        "thresholds.ok" => "1",
+                        "thresholds.critical" => "1",
+                        "thresholds.warning" => "1",
+                        "thresholds.#" => "3",
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          })
+        end
+      end
     end
   end
 end
