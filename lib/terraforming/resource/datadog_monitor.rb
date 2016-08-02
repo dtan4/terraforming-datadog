@@ -36,9 +36,9 @@ module Terraforming
 
           if options["thresholds"]
             threshold_attributes = {}
-            threshold_attributes["thresholds.ok"] = options["thresholds"]["ok"].to_s if options["thresholds"]["ok"]
-            threshold_attributes["thresholds.critical"] = options["thresholds"]["critical"].to_s if options["thresholds"]["critical"]
-            threshold_attributes["thresholds.warning"] = options["thresholds"]["warning"].to_s if options["thresholds"]["warning"]
+            threshold_attributes["thresholds.ok"] = format_number(options["thresholds"]["ok"]).to_s if options["thresholds"]["ok"]
+            threshold_attributes["thresholds.critical"] = format_number(options["thresholds"]["critical"]).to_s if options["thresholds"]["critical"]
+            threshold_attributes["thresholds.warning"] = format_number(options["thresholds"]["warning"]).to_s if options["thresholds"]["warning"]
             threshold_attributes["thresholds.#"] = threshold_attributes.keys.length.to_s
             attributes.merge!(threshold_attributes)
           else
@@ -64,6 +64,10 @@ module Terraforming
       # TODO(dtan4): Use terraform's utility method
       def apply_template(client)
         ERB.new(open(template_path).read, nil, "-").result(binding)
+      end
+
+      def format_number(n)
+        n.to_i == n ? n.to_i : n
       end
 
       def generate_tfstate(resources)

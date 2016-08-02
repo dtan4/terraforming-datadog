@@ -43,7 +43,7 @@ module Terraforming
                 "locked" => false,
                 "timeout_h" => 0,
                 "silenced" => {},
-                "thresholds" => { "critical" => 3.0, "warning" => 2.0 },
+                "thresholds" => { "critical" => 3.1, "warning" => 2.0 },
                 "require_full_window" => true,
                 "notify_no_data" => false,
                 "renotify_interval" => 0,
@@ -107,8 +107,8 @@ EOT
 
     thresholds {
 
-        warning  = 2.0
-        critical = 3.0
+        warning  = 2
+        critical = 3.1
     }
 }
 
@@ -162,8 +162,8 @@ EOT
                         "renotify_interval" => "0",
                         "timeout_h" => "0",
                         "type" => "metric alert",
-                        "thresholds.critical" => "3.0",
-                        "thresholds.warning" => "2.0",
+                        "thresholds.critical" => "3.1",
+                        "thresholds.warning" => "2",
                         "thresholds.#" => "2",
                       }
                     }

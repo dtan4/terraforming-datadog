@@ -15,9 +15,9 @@ EOT
 
     thresholds {
 <%- if options["thresholds"] -%>
-<% if options["thresholds"]["ok"] -%>        ok       = <%= options["thresholds"]["ok"] %><%- end %>
-<% if options["thresholds"]["warning"] -%>        warning  = <%= options["thresholds"]["warning"] %><%- end %>
-<% if options["thresholds"]["critical"] -%>        critical = <%= options["thresholds"]["critical"] %><%- end %>
+<% if options["thresholds"]["ok"] -%>        ok       = <%= format_number(options["thresholds"]["ok"]) %><%- end %>
+<% if options["thresholds"]["warning"] -%>        warning  = <%= format_number(options["thresholds"]["warning"]) %><%- end %>
+<% if options["thresholds"]["critical"] -%>        critical = <%= format_number(options["thresholds"]["critical"]) %><%- end %>
 <%- end -%>
     }
 }
