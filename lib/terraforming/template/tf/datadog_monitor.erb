@@ -8,6 +8,7 @@ resource "datadog_monitor" "<%= resource_name_of(monitor) %>" {
 EOT
     query             = <%= monitor["query"].inspect %>
     notify_no_data    = <%= options["notify_no_data"] %>
+    no_data_timeframe = <%= options["no_data_timeframe"] %>
     renotify_interval = <%= options["renotify_interval"] %>
     notify_audit      = <%= options["notify_audit"] %>
     timeout_h         = <%= options["timeout_h"] %>

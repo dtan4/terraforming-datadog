@@ -27,6 +27,7 @@ module Terraforming
             "name" => monitor["name"],
             "notify_audit" => options["notify_audit"].to_s,
             "notify_no_data" => options["notify_no_data"].to_s,
+            "no_data_timeframe" => options["no_data_timeframe"].to_s,
             "query" => monitor["query"],
             "renotify_interval" => options["renotify_interval"].to_s,
             "timeout_h" => options["timeout_h"].to_s,

@@ -100,6 +100,7 @@ resource "datadog_monitor" "High-Load-Average-hostname-namename" {
 EOT
     query             = "avg(last_1h):avg:system.load.15{*} by {host,name} > 5"
     notify_no_data    = false
+    no_data_timeframe = 120
     renotify_interval = 0
     notify_audit      = false
     timeout_h         = 0
@@ -121,6 +122,7 @@ resource "datadog_monitor" "CriticalVPCAWS-Service-Status" {
 EOT
     query             = "\"aws.status\".over(\"region:ap-northeast-1\",\"service:vpc\").by(\"region\",\"service\").last(2).count_by_status()"
     notify_no_data    = false
+    no_data_timeframe = 2
     renotify_interval = 0
     notify_audit      = true
     timeout_h         = 0
@@ -155,6 +157,7 @@ EOT
                         "name" => "High Load Average {{host.name}} {{name.name}}",
                         "notify_audit" => "false",
                         "notify_no_data" => "false",
+                        "no_data_timeframe" => "120",
                         "query" => "avg(last_1h):avg:system.load.15{*} by {host,name} > 5",
                         "renotify_interval" => "0",
                         "timeout_h" => "0",
@@ -175,6 +178,7 @@ EOT
                         "name" => "[Critical][VPC]AWS Service Status",
                         "notify_audit" => "true",
                         "notify_no_data" => "false",
+                        "no_data_timeframe" => "2",
                         "query" => "\"aws.status\".over(\"region:ap-northeast-1\",\"service:vpc\").by(\"region\",\"service\").last(2).count_by_status()",
                         "renotify_interval" => "0",
                         "timeout_h" => "0",
