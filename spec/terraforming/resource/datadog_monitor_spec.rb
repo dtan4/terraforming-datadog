@@ -110,9 +110,8 @@ EOT
     include_tags       = false
 
     thresholds {
-
-        warning  = 2
         critical = 3.1
+        warning  = 2
     }
 
     silenced {

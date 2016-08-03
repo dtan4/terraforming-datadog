@@ -98,6 +98,11 @@ module Terraforming
         })
       end
 
+      def longest_key_length_of(hash)
+        return 0 if hash.empty?
+        hash.keys.sort_by { |k| k.length }.reverse[0].length
+      end
+
       def monitors
         @client.get_all_monitors[1]
       end
